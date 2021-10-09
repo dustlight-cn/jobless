@@ -25,6 +25,11 @@
         <kubernetes.version>10.0.0</kubernetes.version>
     </properties>
 
+    <modules>
+        <module>jobless-core</module>
+        <module>jobless-kubernetes</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -43,6 +48,17 @@
                 <groupId>io.kubernetes</groupId>
                 <artifactId>client-java</artifactId>
                 <version>${kubernetes.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>plus.jobless</groupId>
+                <artifactId>jobless-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.jobless</groupId>
+                <artifactId>jobless-kubernetes</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
