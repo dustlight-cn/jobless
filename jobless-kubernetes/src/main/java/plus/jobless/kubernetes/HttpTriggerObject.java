@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HttpTriggerObject implements KubernetesObject,Accessible {
+public class HttpTriggerObject implements KubernetesObject, Accessible {
 
     private V1ObjectMeta metadata;
     private String apiVersion;
@@ -16,11 +16,21 @@ public class HttpTriggerObject implements KubernetesObject,Accessible {
 
     @Override
     public String getUrl() {
-        return spec.toString();
+        return spec == null ?
+                null :
+                String.format("%s://%s/%s",
+                        spec.isTls() ? "https" : "http",
+                        spec.getHostName(),
+                        spec.getFunctionName());
     }
 
     @Override
     public String getKey() {
         return spec.getFunctionName();
+    }
+
+    @Override
+    public String toString() {
+        return getUrl();
     }
 }

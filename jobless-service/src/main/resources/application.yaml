@@ -1,0 +1,6 @@
+plus:
+  jobless:
+    kubeless:
+      type: http_trigger
+    zeebe:
+      gateway: zeebe.svc:26500

@@ -12,25 +12,25 @@ import plus.jobless.core.AbstractJobHandler;
 
 @Getter
 @Setter
-public class AccessibleJobHandler extends AbstractJobHandler<Accessible> {
+public class AccessibleJobHandler<T extends Accessible> extends AbstractJobHandler<T> {
 
     private OkHttpClient client;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public AccessibleJobHandler(Accessible spec,OkHttpClient client) {
+    public AccessibleJobHandler(T spec, OkHttpClient client) {
         super(spec);
         this.client = client;
     }
 
-    public AccessibleJobHandler(Accessible spec) {
-        this(spec,new OkHttpClient());
+    public AccessibleJobHandler(T spec) {
+        this(spec, new OkHttpClient());
     }
 
     @Override
-    protected Response handle(ActivatedJob job) throws Throwable {
+    protected Response handle(ActivatedJob job, T accessible) throws Throwable {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), job.toJson());
         return objectMapper.readValue(client.newCall(new Request.Builder()
-                        .url(getSpec().getUrl())
+                        .url(accessible.getUrl())
                         .post(body)
                         .build())
                 .execute()

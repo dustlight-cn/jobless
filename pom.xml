@@ -20,6 +20,7 @@
 
         <spring-boot.version>2.5.2</spring-boot.version>
         <spring-native.version>0.10.1</spring-native.version>
+        <springdoc.version>1.5.9</springdoc.version>
 
         <zeebe.version>1.2.0</zeebe.version>
         <kubernetes.version>10.0.0</kubernetes.version>
@@ -28,6 +29,7 @@
     <modules>
         <module>jobless-core</module>
         <module>jobless-kubernetes</module>
+        <module>jobless-service</module>
     </modules>
 
     <dependencyManagement>
@@ -59,6 +61,17 @@
                 <groupId>plus.jobless</groupId>
                 <artifactId>jobless-kubernetes</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.jobless</groupId>
+                <artifactId>jobless-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

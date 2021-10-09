@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import java.util.Map;
 
-@Getter
 @AllArgsConstructor
 public abstract class AbstractJobHandler<T> implements JobHandler {
 
@@ -19,7 +18,7 @@ public abstract class AbstractJobHandler<T> implements JobHandler {
     public void handle(JobClient client, ActivatedJob job) {
         Response response;
         try {
-            response = handle(job);
+            response = handle(job, spec);
         } catch (Throwable e) {
             response = new Response();
             response.errorMessage = e.getMessage();
@@ -51,7 +50,7 @@ public abstract class AbstractJobHandler<T> implements JobHandler {
         job.toJson();
     }
 
-    protected abstract Response handle(ActivatedJob job) throws Throwable;
+    protected abstract Response handle(ActivatedJob job, T spec) throws Throwable;
 
     /**
      * Job Execute Response

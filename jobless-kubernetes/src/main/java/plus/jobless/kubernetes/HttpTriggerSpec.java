@@ -15,9 +15,4 @@ public class HttpTriggerSpec {
     private String hostName;
 
     private boolean tls;
-
-    @Override
-    public String toString() {
-        return String.format("%s://%s/%s", tls ? "https" : "http", hostName, functionName);
-    }
 }

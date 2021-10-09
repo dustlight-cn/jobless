@@ -39,4 +39,9 @@ public class FunctionObject implements KubernetesObject, Accessible {
     public String getKey() {
         return metadata.getName();
     }
+
+    @Override
+    public String toString() {
+        return getUrl();
+    }
 }

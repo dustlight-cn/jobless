@@ -1,7 +1,7 @@
 package plus.jobless.kubernetes;
 
-import com.google.common.reflect.TypeToken;
 import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.Watch;
 import lombok.Getter;
@@ -12,26 +12,29 @@ import org.springframework.boot.ApplicationArguments;
 import plus.jobless.core.JobHandlerProvider;
 import org.springframework.boot.ApplicationRunner;
 
+import java.lang.reflect.Type;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 @Getter
 @Setter
-public abstract class AbstractWatcher extends JobHandlerProvider<Accessible> implements ApplicationRunner, InitializingBean {
+public abstract class AbstractWatcher<T extends Accessible> extends JobHandlerProvider<T> implements ApplicationRunner, InitializingBean {
 
     private ApiClient client;
     private OkHttpClient httpClient;
 
-    public AbstractWatcher(JobHandlerUpListener<Accessible> upListener, JobHandlerDownListener downListener) {
+    public AbstractWatcher(JobHandlerUpListener<T> upListener, JobHandlerDownListener downListener) {
         super(upListener, downListener);
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         okhttp3.Call watchCall = createWatchCall();
-        try (Watch<Accessible> watch = Watch.createWatch(client,
+        try (Watch<T> watch = Watch.createWatch(client,
                 watchCall,
-                new TypeToken<Watch.Response<Accessible>>() {
-                }.getType())) {
+                getType())) {
             while (watch.hasNext()) {
-                Watch.Response<Accessible> item = watch.next();
+                Watch.Response<T> item = watch.next();
                 switch (item.type) {
                     case "DELETED":
                         callDown(item.object.getKey());
@@ -39,19 +42,25 @@ public abstract class AbstractWatcher extends JobHandlerProvider<Accessible> imp
                     case "ADDED":
                     default:
                         callUp(item.object.getKey(),
-                                new AccessibleJobHandler(item.object, httpClient));
+                                new AccessibleJobHandler<>(item.object, httpClient));
                 }
             }
         }
     }
 
-    protected abstract okhttp3.Call createWatchCall();
+    protected abstract okhttp3.Call createWatchCall() throws Exception;
+
+    protected abstract Type getType();
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if (client == null)
             client = Config.defaultClient();
-        if (httpClient != null)
-            client.setHttpClient(httpClient);
+        Configuration.setDefaultApiClient(client);
+        client.setHttpClient(Objects.requireNonNullElseGet(httpClient,
+                () -> client.getHttpClient()
+                        .newBuilder()
+                        .readTimeout(0, TimeUnit.SECONDS)
+                        .build()));
     }
 }
