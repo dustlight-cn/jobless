@@ -13,8 +13,8 @@ metadata:
   name: flow-reader
   namespace: flow
 rules:
-  - apiGroups: [ "", "extensions", "apps" ]
-    resources: [ "functions" ]
+  - apiGroups: [ "", "kubeless.io" ]
+    resources: [ "functions" , "httptriggers" ]
     verbs: [ "get", "list", "watch" ]
 ---
 # 添加角色绑定
