@@ -1,0 +1,176 @@
+# 创建命名空间 flow
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flow
+---
+# 添加服务账号
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flow
+  namespace: flow
+automountServiceAccountToken: true
+---
+# 添加角色
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: flow-reader
+  namespace: flow
+rules:
+  - apiGroups: [ "", "extensions", "apps" ]
+    resources: [ "*" ]
+    verbs: [ "get", "list", "watch" ]
+---
+# 添加角色绑定
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: flow-reader-binding
+  namespace: flow
+subjects:
+  - kind: ServiceAccount
+    name: flow
+    namespace: flow
+    apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: flow-reader
+  apiGroup: ""
+---
+# 创建 jobless-service 配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jobless-service-config
+  namespace: flow
+data:
+  application.yaml: |-
+    plus:
+      jobless:
+        kubeless:
+          type: function
+        zeebe:
+          gateway: zeebe-zeebe-gateway.zeebe:26500
+    management:
+      endpoint:
+        health:
+          show-details: always
+          group:
+            readness:
+              include: ping
+            liveness:
+              include:
+                - managerChecker
+                - providerChecker
+---
+# 创建镜像拉取密钥
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aliyun-docker-secret
+  namespace: flow
+data:
+  .dockerconfigjson: >-
+    eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1oYW5nemhvdS5hbGl5dW5jcy5jb20iOnsidXNlcm5hbWUiOiJoYW5zaW5AMTcwOTc4NDEzMDAwOTU4MCIsInBhc3N3b3JkIjoibGI4NDU2MTI1MDAiLCJhdXRoIjoiYUdGdWMybHVRREUzTURrM09EUXhNekF3TURrMU9EQTZiR0k0TkRVMk1USTFNREE9In19fQ==
+type: kubernetes.io/dockerconfigjson
+---
+# 创建 Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobless-service
+  namespace: flow
+  labels:
+    app: jobless-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jobless-service
+  template:
+    metadata:
+      labels:
+        app: jobless-service
+    spec:
+      serviceAccountName: flow
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: aliyun-docker-secret
+      containers:
+        - name: jobless-service
+          image: ${SERVICE_IMAGE}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 70
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+      initContainers:
+        - name: init-zeebe-gateway
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', "until nc -z zeebe-zeebe-gateway.zeebe 26500; do echo waiting for zeebe-gateway; sleep 2; done" ]
+      volumes:
+        - name: config
+          configMap:
+            name: jobless-service-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+---
+# 创建服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobless-service
+  namespace: flow
+  labels:
+    app: jobless-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: jobless-service
+  type: ClusterIP
+---
+# 创建 Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: jobless-service
+  namespace: flow
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: jobless-service
+              servicePort: 80
+      host: jobless.flow.wgv.ink
