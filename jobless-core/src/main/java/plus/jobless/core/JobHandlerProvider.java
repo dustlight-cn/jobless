@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class JobHandlerProvider<T> {
+public abstract class JobHandlerProvider<T> {
 
     private JobHandlerUpListener<T> upListener;
     private JobHandlerDownListener downListener;
@@ -27,4 +27,10 @@ public class JobHandlerProvider<T> {
     public interface JobHandlerDownListener {
         void onJobHandlerDown(String key);
     }
+
+    public abstract void start();
+
+    public abstract void stop();
+
+    public abstract boolean isClosed();
 }

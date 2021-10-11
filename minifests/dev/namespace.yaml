@@ -1,0 +1,5 @@
+# 创建命名空间 flow
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flow

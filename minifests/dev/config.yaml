@@ -1,0 +1,25 @@
+# 创建 jobless-service 配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jobless-service-config
+  namespace: flow
+data:
+  application.yaml: |-
+    plus:
+      jobless:
+        kubeless:
+          type: function
+        zeebe:
+          gateway: zeebe-zeebe-gateway.zeebe:26500
+    management:
+      endpoint:
+        health:
+          show-details: always
+          group:
+            readness:
+              include: ping
+            liveness:
+              include:
+                - managerChecker
+                - providerChecker

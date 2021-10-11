@@ -1,4 +1,4 @@
-package plus.jobless.service;
+package plus.jobless.service.configurations;
 
 import lombok.Getter;
 import lombok.Setter;

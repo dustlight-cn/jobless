@@ -41,4 +41,12 @@ public class JobHandlerManager<T> {
             logger.info(String.format("Handler down: [%s].", key));
         }
     }
+
+    public boolean isAnyClosed() {
+        for (JobWorker worker : handlerMap.values()) {
+            if (worker.isClosed())
+                return true;
+        }
+        return false;
+    }
 }
