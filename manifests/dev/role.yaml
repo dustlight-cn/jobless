@@ -14,7 +14,7 @@ metadata:
   namespace: flow
 rules:
   - apiGroups: [ "", "extensions", "apps" ]
-    resources: [ "*" ]
+    resources: [ "functions" ]
     verbs: [ "get", "list", "watch" ]
 ---
 # 添加角色绑定
