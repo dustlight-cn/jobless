@@ -21,6 +21,11 @@ public class JobHandlerManager<T> {
     }
 
     public void addHandler(String key, AbstractJobHandler<T> handler) {
+        if (handlerMap.containsKey(key)) {
+            JobWorker oldWorker = handlerMap.get(key);
+            if (oldWorker != null)
+                oldWorker.close();
+        }
         JobWorker worker = client.newWorker()
                 .jobType(key)
                 .handler(handler)
@@ -31,8 +36,17 @@ public class JobHandlerManager<T> {
 
     public void removeHandler(String key) {
         JobWorker worker = handlerMap.remove(key);
-        if (worker != null && (worker.isOpen() || !worker.isClosed()))
+        if (worker != null) {
             worker.close();
-        logger.info(String.format("Handler down: [%s].", key));
+            logger.info(String.format("Handler down: [%s].", key));
+        }
+    }
+
+    public boolean isAnyClosed() {
+        for (JobWorker worker : handlerMap.values()) {
+            if (worker.isClosed())
+                return true;
+        }
+        return false;
     }
 }

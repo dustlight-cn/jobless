@@ -1,4 +1,4 @@
-package plus.jobless.service;
+package plus.jobless.service.configurations;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientBuilder;

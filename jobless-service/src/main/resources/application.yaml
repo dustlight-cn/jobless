@@ -4,3 +4,14 @@ plus:
       type: http_trigger
     zeebe:
       gateway: zeebe.svc:26500
+management:
+  endpoint:
+    health:
+      show-details: always
+      group:
+        readness:
+          include: ping
+        liveness:
+          include:
+            - managerChecker
+            - providerChecker
