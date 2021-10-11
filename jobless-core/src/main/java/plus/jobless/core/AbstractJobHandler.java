@@ -6,13 +6,18 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Map;
 
 @AllArgsConstructor
 public abstract class AbstractJobHandler<T> implements JobHandler {
 
     private T spec;
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Override
     public void handle(JobClient client, ActivatedJob job) {
@@ -20,8 +25,12 @@ public abstract class AbstractJobHandler<T> implements JobHandler {
         try {
             response = handle(job, spec);
         } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
             response = new Response();
-            response.errorMessage = e.getMessage();
+            response.setResult(Result.ERROR);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(byteArrayOutputStream));
+            response.errorMessage = e.getMessage() == null ? new String(byteArrayOutputStream.toByteArray()) : e.getMessage();
             response.errorCode = "Internal Server Error";
         }
         switch (response.result) {
@@ -47,7 +56,6 @@ public abstract class AbstractJobHandler<T> implements JobHandler {
                         .join();
                 break;
         }
-        job.toJson();
     }
 
     protected abstract Response handle(ActivatedJob job, T spec) throws Throwable;

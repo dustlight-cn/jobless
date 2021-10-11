@@ -38,11 +38,13 @@ public abstract class AbstractWatcher<T extends Accessible> extends JobHandlerPr
                 switch (item.type) {
                     case "DELETED":
                         callDown(item.object.getKey());
+                        break;
                     case "MODIFIED":
                     case "ADDED":
                     default:
                         callUp(item.object.getKey(),
                                 new AccessibleJobHandler<>(item.object, httpClient));
+                        break;
                 }
             }
         }
@@ -57,10 +59,11 @@ public abstract class AbstractWatcher<T extends Accessible> extends JobHandlerPr
         if (client == null)
             client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
-        client.setHttpClient(Objects.requireNonNullElseGet(httpClient,
+        httpClient = Objects.requireNonNullElseGet(httpClient,
                 () -> client.getHttpClient()
                         .newBuilder()
                         .readTimeout(0, TimeUnit.SECONDS)
-                        .build()));
+                        .build());
+        client.setHttpClient(httpClient);
     }
 }
