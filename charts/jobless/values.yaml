@@ -1,0 +1,33 @@
+# Default values for fun.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: dustlightcn/jobless-service
+  tag: "latest"
+
+ingress:
+  className: "nginx"
+  host: "fun.dustlight.cn"
+  functionsHost: "%s.fun.dustlight.cn"
+
+config:
+  auth:
+    clientId: "test"
+    clientSecret: "e6423085f5165a58f8949e763c6691ffe44e2f86"
+    apiEndpoint: "https://api.dustlight.cn"
+    tokenUri: "https://api.dustlight.cn/v1/oauth/token"
+    checkTokenUri: "https://api.dustlight.cn/v1/token/validity"
+    jwkSetUri: "https://api.dustlight.cn/v1/jwk"
+    authorizationEndpoint: "https://accounts.dustlight.cn/authorize"
+  storage:
+    type: "minio"
+    endpoint: "http://fun-dev.oss.dustlight.cn"
+    bucket: "fun-dev"
+    accessKey: "SIIP49JG7V4IO6N78HAE"
+    secretKey: "Dn+LxRvuQOejZju+n+EymEMgoC4KuuaqEVAgVBBY"
+    region: "gz"
+
+logging: debug
