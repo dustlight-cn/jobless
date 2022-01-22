@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-    <groupId>plus.jobless</groupId>
+    <groupId>cn.dustlight.jobless</groupId>
     <artifactId>jobless-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <description>JobWorker Kubeless</description>
@@ -53,17 +53,17 @@
             </dependency>
 
             <dependency>
-                <groupId>plus.jobless</groupId>
+                <groupId>cn.dustlight.jobless</groupId>
                 <artifactId>jobless-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>plus.jobless</groupId>
+                <groupId>cn.dustlight.jobless</groupId>
                 <artifactId>jobless-kubernetes</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>plus.jobless</groupId>
+                <groupId>cn.dustlight.jobless</groupId>
                 <artifactId>jobless-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -216,19 +216,6 @@
         </pluginManagement>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>rdc-releases</id>
-            <name>Release</name>
-            <url>https://packages.aliyun.com/maven/repository/2106480-release-GJHJba/</url>
-        </repository>
-        <snapshotRepository>
-            <id>rdc-snapshots</id>
-            <name>Snapshot</name>
-            <url>https://packages.aliyun.com/maven/repository/2106480-snapshot-hEcsFi/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <repositories>
         <repository>
             <id>spring-releases</id>
@@ -250,6 +237,30 @@
         </pluginRepository>
     </pluginRepositories>
 
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>OSS Snapshots Repository</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <name>OSS Staging Repository</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <url>https://github.com/dustlight-cn/jobless</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo,manual</distribution>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <name>Hansin1997</name>
@@ -257,5 +268,11 @@
             <url>https://github.com/Hansin1997</url>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/dustlight-cn/jobless.git</connection>
+        <developerConnection>scm:git:https://github.com/dustlight-cn/jobless.git</developerConnection>
+        <url>https://github.com/dustlight-cn/jobless</url>
+    </scm>
 
 </project>

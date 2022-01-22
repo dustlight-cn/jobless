@@ -1,0 +1,61 @@
+# 创建 Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    app: {{ .Release.Name }}-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-service
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-service
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: jobless-service
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+      initContainers:
+        - name: init-zeebe-gateway
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', "until nc -z {{ .Values.zeebe.host }} {{ .Values.zeebe.port }}; do echo waiting for zeebe-gateway; sleep 2; done" ]
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-service-config
+            items:
+              - key: application.yaml
+                path: application.yaml
