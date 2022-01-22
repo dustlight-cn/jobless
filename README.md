@@ -1,20 +1,20 @@
-# Jobless
-[简介](#简介) | [功能](#功能) | [构建](#构建) | [部署](#部署)
+## Usage
 
-## 简介
-```JobWorker``` & ```Kubeless```
+[Helm](https://helm.sh) must be installed to use the charts.  Please refer to
+Helm's [documentation](https://helm.sh/docs) to get started.
 
-#### 功能
-* 将 ```Kubeless``` 的 ```Function``` 作为 ```JobWorker```。
+Once Helm has been set up correctly, add the repo as follows:
 
-#### 技术栈
-* Spring Boot
-* OAuth2.0
+    helm repo add jobless https://dustlight-cn.github.io/jobless
 
-## 构建
-```shell
-mvn package
-```
+If you had already added this repo earlier, run `helm repo update` to retrieve
+the latest versions of the packages.  You can then run `helm search repo
+jobless` to see the charts.
 
-## 部署
-待完善
+To install the Jobless chart:
+
+    helm install my-jobless jobless/jobless
+
+To uninstall the chart:
+
+    helm delete jobless
