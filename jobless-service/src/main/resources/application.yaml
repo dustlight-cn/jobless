@@ -3,7 +3,7 @@ plus:
     kubeless:
       type: http_trigger
     zeebe:
-      gateway: zeebe.svc:26500
+      gateway: localhost:26500
 management:
   endpoint:
     health:
