@@ -2,27 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jobless-service
-  namespace: flow
+  name: {{ .Release.Name }}-service
   labels:
-    app: jobless-service
+    app: {{ .Release.Name }}-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jobless-service
+      app: {{ .Release.Name }}-service
   template:
     metadata:
       labels:
-        app: jobless-service
+        app: {{ .Release.Name }}-service
     spec:
-      serviceAccountName: flow
+      serviceAccountName: {{ .Release.Name }}
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-        - name: aliyun-docker-secret
       containers:
         - name: jobless-service
-          image: ${SERVICE_IMAGE}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -54,11 +51,11 @@ spec:
         - name: init-zeebe-gateway
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: [ 'sh', '-c', "until nc -z zeebe-zeebe-gateway.zeebe 26500; do echo waiting for zeebe-gateway; sleep 2; done" ]
+          command: [ 'sh', '-c', "until nc -z {{ .Values.zeebe.host }} {{ .Values.zeebe.port }}; do echo waiting for zeebe-gateway; sleep 2; done" ]
       volumes:
         - name: config
           configMap:
-            name: jobless-service-config
+            name: {{ .Release.Name }}-service-config
             items:
               - key: application.yaml
                 path: application.yaml

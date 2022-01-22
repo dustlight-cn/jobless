@@ -1,16 +1,14 @@
-# 创建 Ingress
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: jobless-service
-  namespace: flow
+  name: {{ .Release.Name }}-service
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     - http:
         paths:
           - path: /
             backend:
-              serviceName: jobless-service
+              serviceName: {{ .Release.Name }}-service
               servicePort: 80
-      host: jobless.flow.wgv.ink
+      host: {{ .Values.ingress.host }}

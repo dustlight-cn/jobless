@@ -2,16 +2,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jobless-service-config
-  namespace: flow
+  name: {{ .Release.Name }}-service-config
 data:
   application.yaml: |-
     plus:
       jobless:
         kubeless:
-          type: function
+          type: {{ .Values.type }}
         zeebe:
-          gateway: zeebe-zeebe-gateway.zeebe:26500
+          gateway: {{ .Values.zeebe.host }}:{{ .Values.zeebe.port }}
     management:
       endpoint:
         health:
@@ -23,3 +22,6 @@ data:
               include:
                 - managerChecker
                 - providerChecker
+    logging:
+      level:
+        cn.dustlight.jobless.*: {{ .Values.logging }}

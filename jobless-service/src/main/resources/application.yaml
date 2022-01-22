@@ -15,3 +15,6 @@ management:
           include:
             - managerChecker
             - providerChecker
+logging:
+  level:
+    cn.dustlight.jobless.*: debug
