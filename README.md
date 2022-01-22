@@ -17,4 +17,4 @@ To install the Jobless chart:
 
 To uninstall the chart:
 
-    helm delete jobless
+    helm delete my-jobless
