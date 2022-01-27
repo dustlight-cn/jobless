@@ -27,26 +27,26 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.jobless.kubeless", name = "type", havingValue = "function", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dustlight.jobless.kubeless", name = "type", havingValue = "function", matchIfMissing = true)
     public JobHandlerManager<FunctionObject> functionObjectJobHandlerManager(@Autowired ZeebeClient client) {
         return new JobHandlerManager<>(client);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.jobless.kubeless", name = "type", havingValue = "function", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dustlight.jobless.kubeless", name = "type", havingValue = "function", matchIfMissing = true)
     public FunctionWatcher functionWatcher(@Autowired JobHandlerManager<FunctionObject> jobHandlerManager) {
         return new FunctionWatcher((key, handler) -> jobHandlerManager.addHandler(key, handler),
                 key -> jobHandlerManager.removeHandler(key));
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.jobless.kubeless", name = "type", havingValue = "http_trigger")
+    @ConditionalOnProperty(prefix = "dustlight.jobless.kubeless", name = "type", havingValue = "http_trigger")
     public JobHandlerManager<HttpTriggerObject> httpTriggerObjectJobHandlerManager(@Autowired ZeebeClient client) {
         return new JobHandlerManager<>(client);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.jobless.kubeless", name = "type", havingValue = "http_trigger")
+    @ConditionalOnProperty(prefix = "dustlight.jobless.kubeless", name = "type", havingValue = "http_trigger")
     public HttpTriggerWatcher httpTriggerWatcher(@Autowired JobHandlerManager<HttpTriggerObject> jobHandlerManager) {
         return new HttpTriggerWatcher((key, handler) -> jobHandlerManager.addHandler(key, handler),
                 key -> jobHandlerManager.removeHandler(key));

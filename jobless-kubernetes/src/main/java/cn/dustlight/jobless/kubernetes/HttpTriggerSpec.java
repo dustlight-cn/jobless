@@ -15,4 +15,7 @@ public class HttpTriggerSpec {
     private String hostName;
 
     private boolean tls;
+
+    @SerializedName("tls-secret")
+    private String tlsSecret;
 }

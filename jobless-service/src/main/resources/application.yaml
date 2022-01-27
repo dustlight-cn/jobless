@@ -1,4 +1,4 @@
-plus:
+dustlight:
   jobless:
     kubeless:
       type: http_trigger

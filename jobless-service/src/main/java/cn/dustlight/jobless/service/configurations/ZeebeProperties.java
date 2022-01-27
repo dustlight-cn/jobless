@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.jobless.zeebe")
+@ConfigurationProperties(prefix = "dustlight.jobless.zeebe")
 public class ZeebeProperties {
 
     private String gateway;

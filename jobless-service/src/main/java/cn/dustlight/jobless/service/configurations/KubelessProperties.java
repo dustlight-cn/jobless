@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.jobless.kubeless")
+@ConfigurationProperties(prefix = "dustlight.jobless.kubeless")
 public class KubelessProperties {
 
     private Type type = Type.HTTP_TRIGGER;

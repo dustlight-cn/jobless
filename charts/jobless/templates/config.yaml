@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-service-config
 data:
   application.yaml: |-
-    plus:
+    dustlight:
       jobless:
         kubeless:
           type: {{ .Values.type }}

@@ -2,14 +2,10 @@ replicaCount: 1
 
 image:
   repository: dustlightcn/jobless-service
-  tag: "latest"
-
-ingress:
-  className: "nginx"
-  host: "jobless.dustlight.cn"
+  tag: "0.0.1-alpha"
 
 zeebe:
-  host: zeebe-zeebe-gateway.zeebe
+  host: zeebe-zeebe-gateway
   port: 26500
 
 type: function
