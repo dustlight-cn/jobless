@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   jobless:
   - apiVersion: v2
+    appVersion: 0.0.1-alpha
+    created: "2022-01-27T11:11:00.156881407Z"
+    description: Zeebe-Kubeless Connector
+    digest: b9b828bcd81c3f93020ca0761537d8958bd30ce55fb1a2845e6c7a42136557f2
+    name: jobless
+    type: application
+    urls:
+    - https://github.com/dustlight-cn/jobless/releases/download/jobless-0.0.2/jobless-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
     appVersion: 0.0.1-SNAPSHOT
     created: "2022-01-22T10:29:49.146688947Z"
     description: Zeebe-Kubeless Connector
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/dustlight-cn/jobless/releases/download/jobless-0.0.1-SNAPSHOT/jobless-0.0.1-SNAPSHOT.tgz
     version: 0.0.1-SNAPSHOT
-generated: "2022-01-22T10:29:49.146699147Z"
+generated: "2022-01-27T11:11:00.156903608Z"
