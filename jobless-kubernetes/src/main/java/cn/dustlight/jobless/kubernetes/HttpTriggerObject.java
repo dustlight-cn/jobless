@@ -1,10 +1,10 @@
 package cn.dustlight.jobless.kubernetes;
 
+import cn.dustlight.jobless.core.Utils;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
@@ -20,9 +20,10 @@ public class HttpTriggerObject implements KubernetesObject, Accessible {
         return spec == null ?
                 null :
                 String.format("%s://%s/%s",
-                        spec.isTls() || StringUtils.hasText(spec.getTlsSecret()) ? "https" : "http",
+//                        spec.isTls() || StringUtils.hasText(spec.getTlsSecret()) ? "https" : "http",
+                        "http",
                         spec.getHostName(),
-                        spec.getFunctionName());
+                        Utils.getSuffix(spec.getFunctionName()));
     }
 
     @Override
@@ -34,4 +35,5 @@ public class HttpTriggerObject implements KubernetesObject, Accessible {
     public String toString() {
         return getUrl();
     }
+
 }

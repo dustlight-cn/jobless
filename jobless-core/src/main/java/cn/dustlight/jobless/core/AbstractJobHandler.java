@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -51,11 +52,17 @@ public abstract class AbstractJobHandler<T> implements JobHandler {
             case COMPLETE:
             default:
                 client.newCompleteCommand(job.getKey())
-                        .variables(response.variables)
+                        .variables(newMap(Utils.getSuffix(job.getElementId()), response.variables))
                         .send()
                         .join();
                 break;
         }
+    }
+
+    public static Map<String, Object> newMap(String key, Object value) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put(key, value);
+        return result;
     }
 
     protected abstract Response handle(ActivatedJob job, T spec) throws Throwable;
