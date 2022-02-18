@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: dustlightcn/jobless-service
-  tag: "0.0.1-alpha"
+  tag: "0.0.2-alpha"
 
 zeebe:
   host: zeebe-zeebe-gateway
